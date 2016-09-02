@@ -1,0 +1,166 @@
+# [PackageDev] target_format: plist, ext: tmLanguage
+---
+name: MADX
+scopeName: source.madx
+fileTypes: [mad]
+uuid: b57b29bd-8a7c-4ca9-9346-6a5dc8cc5bd6
+
+patterns:
+#First include all comments, anywhere.
+- include: '#madxComments'
+- include: '#madxVariables'
+  
+#Then go ahead and get the strings.
+#How do I ensure that the open/close delimeters are matched?
+- comment: Strings
+  name: string
+  begin: (\')|(\")
+  end: (\')|(\")
+
+#Now look for commands that are preeceeded by a label.
+#I should be able to handle this better. i.e. show invalid attributes etc.
+#This does not mark madx keywords as invalid labels, does not check for uniqueness
+- comment: Command Given by 
+  name: command
+  begin: ([A-Za-z][A-Za-z0-9\._]{1,15}(\w*)\s*(\:)(?!\=))
+  # begin: (([.[^\!]]*)?(\:)(?!\=)) #Old version didn't check for valid chars, length.
+  beginCaptures:
+    '1': {name: label}
+    '2': {name: invalid}
+    '3': {name: keyword.operator}
+  end: (\;)
+  endCaptures:
+    '1': {name: keyword.operator.terminator}
+  patterns:
+  # - include: $self
+  - include: '#madxCommand'
+
+#Then include all commands NOT preceeded by a label.
+- include: '#madxCommand'
+
+# - comment: Matching Mode
+#   begin: (?i)\b(match)\b
+#   beginCaptures:
+#     '1': {name: keyword.operator.madx.matching}
+#   end: (?i)\b(endmatch)\b
+#   endCaptures:
+#     '1': {name: keyword.operator.madx.matching}
+#   patterns:
+#   - include: '#matchingMode'
+#   - include: '#madxOperators'
+
+
+
+repository:
+  madxComments:
+    patterns:
+    # - comment: Comment - match is a pair of /* */
+    #   name: comment.separator
+    #   match: (\!)(\*){10,}  
+    - comment: Comment
+      name: comment.line
+      contentName: comment.line
+      begin: \!
+      end: $
+    - comment: Comment - match is a pair of /* */
+      name: comment.block
+      begin: '\/\*'
+      end:   '\*\/'
+  madxVariables:
+    patterns:
+    - name: support.function
+      match: (?i)\#(S|E)\b
+    - name: support.function
+      match: (?i)\b(x|px|y|py|t|pt|deltap|s|TRUE|FALSE)\b
+    - name: support.function
+      match: (?i)\b(xn|pxn|wx|phix|yn|pyn|wy|phiy|tn|ptn|wt|phit)\b
+    - name: support.function
+      match: (?i)\b((bet|alf|mu|d|dp|)(x|y))\b
+    - name: support.function
+      match: (?i)\b(r11|r12|r21|r22)\b
+  madxOperators:
+    patterns:
+    - name: keyword.operator
+      match: (\:\=)|(\=)|(\-\>)|(\;)|(\+)|(\-)|(\/)|(\<)|(\>)
+    - name: keyword.operator.terminator
+      match: (\;)
+  # madxElement:
+  #   patterns:
+  #     - name: support.function
+  #       match: (?i)\b(L|K1)\b(\s*)(?=[\=|\:\=])
+      # - name: invalid
+      #   match: (?i)\b(.*)(\=)\b
+  madxCommand:
+    patterns:
+    - name: keyword.operator.madx.generalControl
+      match: (?i)\b(EXIT|QUIT|STOP|HELP|SHOW|VALUE|OPTION|EXEC|SET|SYSTEM|TITLE|USE|SELECT)\b
+    - name: keyword.operator.madx.fileHandling
+      match: (?i)(ASSIGN|CALL(S{0,1})|RETURN|PRINT|PRINTF|RENAMEFILE|COPYFILE|REMOVEFILE)
+    - name: keyword.operator.madx.fileHandling
+      match: (?i)\b(CREATE|DELETE|READTABLE|READMYTABLE|WRITE|SETVARS|SETVARS_LIN|FILL|SHRINK)\b
+    - name: keyword.operator.madx.beam
+      match: (?i)\b(BEAM|RESBEAM)\b
+    - name: keyword.operator.madx.sequenceEditor
+      match: (?i)\b(SEQEDIT|FLATTEN|CYCLE|REFLECT|INSTALL|MOVE|REMOVE|REPLACE|EXTRACT|ENDEDIT|SAVE|DUMPSEQU)\b
+    - name: keyword.operator.madx.rangeAndClass
+      match: (?i)\b(RANGE|CLASS)\b
+    - name: keyword.operator.madx.rangeAndClass
+      match: (?i)\b(PLOT|SETPLOT|RESPLOT|RPLOT)\b
+    - name: keyword.operator.madx.element
+      match: (?i)\b(hkicker|vkicker|tkicker|kicker)\b
+    - comment: "Matching Mode."
+      begin: (?i)\b(match)\b(\s*)(\,)
+      beginCaptures:
+        '1': {name: keyword.operator.madx.matching}
+      end: (?i)\b(endmatch)\b
+      endCaptures:
+        '1': {name: keyword.operator.madx.matching}
+      patterns:
+      - include: '#matchingMode'
+    # - comment: "QUAD test"
+    #   begin: (?i)\b(quadrupole)\b(\s*)(\,)
+    #   beginCaptures:
+    #     '1': {name: keyword.operator.madx.matching}
+    #   end: (\b|\s)(?=\;)
+    #   endCaptures:
+    #     '0': {name: keyword.operator.madx.matching}
+    #   patterns:
+    #   - include: '#quadTest'
+    # - comment: "QUAD test"
+    #   begin: (?i)\b(drift)\b(\s*)(\,)
+    #   beginCaptures:
+    #     '1': {name: keyword.operator.madx.matching}
+    #   end: (\b|\s|\.)(?=\;)
+    #   endCaptures:
+    #     '0': {name: keyword.operator.madx.matching}
+    #   patterns:
+    #   - include: '#driftTest'
+    - name: keyword.operator.madx.element
+      match: (?i)\b(marker|drift|line|sbend|rbend|dipedge|quadrupole|sextupole|octupole|multipole|solenoid|nllens|rfcavity|rfmultipole|crabcavity|elseparator)\b
+    - name: keyword.operator.madx.element
+      match: (?i)(hmonitor|vmonitor|monitor|instrument|placeholder|collimator|beambeam|matrix|yrotation|srotation|translation|changeref)(?=\b)
+    - name: keyword.operator.madx.twiss
+      match: (?i)(twiss)(?=\b)
+    - name: keyword.operator.madx.errorDef
+      match: (?i)(eprint|esave|ealign|eoption|efcomp|seterr)(?=\b)
+    - include: '#madxComments'
+    - include: '#madxOperators'
+  matchingMode:
+    patterns:
+    - name: keyword.operator.madx.matchingMode
+      match: (?i)\b(sequence|vary|constraint|weight|global|gweight|lmdif|migrad|simplex|jacobian)\b
+    - include: '#madxComments'
+    - include: '#madxOperators'
+  # quadTest:
+  #   patterns:
+  #   - name: keyword.operator.madx.matchingMode
+  #     match: (?i)\b(sequence|vary|constraint|weight|global|gweight|lmdif|migrad|simplex|jacobian)\b
+  #   - include: '#madxComments'
+  # driftTest:
+  #     patterns:
+  #     - name: keyword.operator.madx.matchingMode
+  #       match: (?i)\b(sequence|vary|constraint|weight|global|gweight|lmdif|migrad|simplex|jacobian)\b
+  #     - include: '#madxComments'
+
+
+
