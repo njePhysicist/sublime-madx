@@ -19,14 +19,8 @@
 			<string>#madxVariables</string>
 		</dict>
 		<dict>
-			<key>begin</key>
-			<string>(\')|(\")</string>
-			<key>comment</key>
-			<string>Strings</string>
-			<key>end</key>
-			<string>(\')|(\")</string>
-			<key>name</key>
-			<string>string</string>
+			<key>include</key>
+			<string>#madxStrings</string>
 		</dict>
 		<dict>
 			<key>begin</key>
@@ -78,10 +72,65 @@
 	</array>
 	<key>repository</key>
 	<dict>
+		<key>attributes</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.attribute.quad</string>
+						</dict>
+					</dict>
+					<key>comment</key>
+					<string>Quad Attributes</string>
+					<key>match</key>
+					<string>(?i)\b(L|K1)((\=)|\:\=)</string>
+				</dict>
+				<dict>
+					<key>captures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>invalid</string>
+						</dict>
+					</dict>
+					<key>comment</key>
+					<string>Invalid Quad Attributes</string>
+					<key>match</key>
+					<string>(?i)\b([^L)])((\=)|\:\=)</string>
+				</dict>
+			</array>
+		</dict>
 		<key>madxCommand</key>
 		<dict>
 			<key>patterns</key>
 			<array>
+				<dict>
+					<key>begin</key>
+					<string>(?i)\b(QUADRUPOLE)\b</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>keyword.operator.madx</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>(?=\;)</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#attributes</string>
+						</dict>
+					</array>
+				</dict>
 				<dict>
 					<key>match</key>
 					<string>(?i)\b(EXIT|QUIT|STOP|HELP|SHOW|VALUE|OPTION|EXEC|SET|SYSTEM|TITLE|USE|SELECT)\b</string>
@@ -200,18 +249,10 @@
 			<key>patterns</key>
 			<array>
 				<dict>
-					<key>comment</key>
-					<string>Comment - match is a pair of /* */</string>
-					<key>match</key>
-					<string>(\!)(\*){10,}</string>
-					<key>name</key>
-					<string>comment.separator</string>
-				</dict>
-				<dict>
 					<key>begin</key>
 					<string>\!</string>
 					<key>comment</key>
-					<string>Comment</string>
+					<string>Single Line Comment</string>
 					<key>contentName</key>
 					<string>comment.line</string>
 					<key>end</key>
@@ -223,7 +264,7 @@
 					<key>begin</key>
 					<string>\/\*</string>
 					<key>comment</key>
-					<string>Comment - match is a pair of /* */</string>
+					<string>Block Comment - match is a pair of /* */</string>
 					<key>end</key>
 					<string>\*\/</string>
 					<key>name</key>
@@ -246,6 +287,22 @@
 					<string>(\;)</string>
 					<key>name</key>
 					<string>keyword.operator.terminator</string>
+				</dict>
+			</array>
+		</dict>
+		<key>madxString</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>begin</key>
+					<string>(\')|(\")</string>
+					<key>comment</key>
+					<string>Strings</string>
+					<key>end</key>
+					<string>(\')|(\")</string>
+					<key>name</key>
+					<string>string</string>
 				</dict>
 			</array>
 		</dict>
