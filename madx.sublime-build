@@ -1,4 +1,0 @@
-{
-	"cmd": ["/usr/bin/madx","$file"],
-	"selector": "source.madx"
-}

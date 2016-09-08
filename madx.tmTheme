@@ -92,6 +92,17 @@
 			<key>name</key>
 			<string>MAD-X Operator</string>
 			<key>scope</key>
+			<string>keyword.attribute.cattribute</string>
+			<key>settings</key>
+			<dict>
+				<key>foreground</key>
+				<string>#99ccff</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>MAD-X Operator</string>
+			<key>scope</key>
 			<string>keyword.operator.madx.matching</string>
 			<key>settings</key>
 			<dict>

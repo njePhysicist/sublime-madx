@@ -34,16 +34,16 @@ patterns:
 #Then include all commands NOT preceeded by a label.
 - include: '#madxCommand'
 
-# - comment: Matching Mode
-#   begin: (?i)\b(match)\b
-#   beginCaptures:
-#     '1': {name: keyword.operator.madx.matching}
-#   end: (?i)\b(endmatch)\b
-#   endCaptures:
-#     '1': {name: keyword.operator.madx.matching}
-#   patterns:
-#   - include: '#matchingMode'
-#   - include: '#madxOperators'
+- comment: Matching Mode
+  begin: (?i)\b(match)\b
+  beginCaptures:
+    '1': {name: keyword.operator.madx.matching}
+  end: (?i)\b(endmatch)\b
+  endCaptures:
+    '1': {name: keyword.operator.madx.matching}
+  patterns:
+  # - include: '#matchingMode'
+  - include: '#madxOperators'
 
 repository:
   madxComments:
@@ -77,85 +77,434 @@ repository:
       end: (\')|(\")
   madxOperators:
     patterns:
-    - name: keyword.operator
-      match: (\:\=)|(\=)|(\-\>)|(\;)|(\+)|(\-)|(\/)|(\<)|(\>)
+    - match: ((\:\=)|(\=)|(\-\>)|(\+)|(\-)|(\/)|(\<)|(\>))
+      captures:
+        '1': {name: keyword.operator}
     - name: keyword.operator.terminator
       match: (\;)
-  # madxElement:
-  #   patterns:
-  #     - name: support.function
-  #       match: (?i)\b(L|K1)\b(\s*)(?=[\=|\:\=])
-      # - name: invalid
-      #   match: (?i)\b(.*)(\=)\b
   madxCommand:
     patterns:
-    - begin: (?i)\b(QUADRUPOLE)\b
+    - begin: (?i)\b(ECOLLIMATOR)(\s*)\b
       beginCaptures:
         '1': {name: keyword.operator.madx}
       end: (?=\;)
       patterns:
-      - include: '#attributes'
-    - name: keyword.operator.madx.generalControl
-      match: (?i)\b(EXIT|QUIT|STOP|HELP|SHOW|VALUE|OPTION|EXEC|SET|SYSTEM|TITLE|USE|SELECT)\b
-    - name: keyword.operator.madx.fileHandling
-      match: (?i)(ASSIGN|CALL(S{0,1})|RETURN|PRINT|PRINTF|RENAMEFILE|COPYFILE|REMOVEFILE)
-    - name: keyword.operator.madx.fileHandling
-      match: (?i)\b(CREATE|DELETE|READTABLE|READMYTABLE|WRITE|SETVARS|SETVARS_LIN|FILL|SHRINK)\b
-    - name: keyword.operator.madx.beam
-      match: (?i)\b(BEAM|RESBEAM)\b
-    - name: keyword.operator.madx.sequenceEditor
-      match: (?i)\b(SEQEDIT|FLATTEN|CYCLE|REFLECT|INSTALL|MOVE|REMOVE|REPLACE|EXTRACT|ENDEDIT|SAVE|DUMPSEQU)\b
-    - name: keyword.operator.madx.rangeAndClass
-      match: (?i)\b(RANGE|CLASS)\b
-    - name: keyword.operator.madx.rangeAndClass
-      match: (?i)\b(PLOT|SETPLOT|RESPLOT|RPLOT)\b
-    - name: keyword.operator.madx.element
-      match: (?i)\b(hkicker|vkicker|tkicker|kicker)\b
-    - comment: "Matching Mode."
-      begin: (?i)\b(match)\b(\s*)(\,)
+      - comment: Attributes
+        match: (?i)\b(L|XSIZE|YSIZE)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(BEAMBEAM)(\s*)\b
       beginCaptures:
-        '1': {name: keyword.operator.madx.matching}
-      end: (?i)\b(endmatch)\b
-      endCaptures:
-        '1': {name: keyword.operator.madx.matching}
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
       patterns:
-      - include: '#matchingMode'
-    - name: keyword.operator.madx.element
-      match: (?i)\b(marker|drift|line|sbend|rbend|dipedge|quadrupole|sextupole|octupole|multipole|solenoid|nllens|rfcavity|rfmultipole|crabcavity|elseparator)\b
-    - name: keyword.operator.madx.element
-      match: (?i)(hmonitor|vmonitor|monitor|instrument|placeholder|collimator|beambeam|matrix|yrotation|srotation|translation|changeref)(?=\b)
-    - name: keyword.operator.madx.twiss
-      match: (?i)(twiss)(?=\b)
-    - name: keyword.operator.madx.errorDef
-      match: (?i)(eprint|esave|ealign|eoption|efcomp|seterr)(?=\b)
+      - comment: Attributes
+        match: (?i)\b(CHARGE|XMA|YMA|SIGX|SIGY|WIDTH|BBSHAPE|BBDIR)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(USE)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(SEQUENCE|PERIOD|RANGE|SURVEY)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(OPTION)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(FLAG)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(TKICKER)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L|KICK|TILT|HKICK|VKICK)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(HKICKER)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L|KICK|TILT)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(CRABCAVITY)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L|VOLT|LAG|FREQ|HARMON|RV1|RV2|RV3|RV4|RPH1|RPH2|LAGF)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(NLLENS)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(KNLL|CNLL)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(SEXTUPOLE)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L|K2|K2S|TILT)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(RBEND)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L|ANGLE|TILT|K0|K1|K2|E1|E2|FINT|FINTX|HGAP|H1|H2|THICK)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(BEAM)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(PARTICLE|MASS|CHARGE|ENERGY|PARTICLEGAMMA|BETA|BRHO|EX|EXN|EY|EYN|EY|SIGT|SIGE|KBUNCH|NPART|BCURRENT|BUNCHED|RADIATE|BV|SEQUENCE)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(COLLIMATOR)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L|APERTYPE|APERTURE|APER_OFFSET|APER_TOL)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(VMONITOR)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(KICKER)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L|KICK|TILT|HKICK|VKICK)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(QUADRUPOLE)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L|K1|K1S|TILT|THICK)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      # - comment: Attributes #Trying to add invalid stuff...
+      #   match: (?i)\b(.*)(\s*)((\=)|\:\=)
+      #   captures:
+      #     '1': {name: invalid}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(HMONITOR)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(RFMULTIPOLE)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L|VOLT|LAG|FREQ|HARMON|LRAD|TILT|KNL|KSL|PNL|PSL)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(RESBEAM)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(SEQUENCE)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(SELECT)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(FLAG|RANGE|CLASS|PATTERN|SEQUENCE|FULL|CLEAR|COLUMN|SLICE|THICK)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(MONITOR)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(OCTUPOLE)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L|K3|K3S|TILT)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(SET)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(FORMAT|SEQUENCE)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(MATRIX)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(TYPE|L|KICK1|KICK6|RM11|RM66|TM111|TM666)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(MULTIPOLE)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(LRAD|TILT|KNL|KSL)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(RCOLLIMATOR)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L|XSIZE|YSIZE)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(DIPEDGE)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(H|E1|FINT|HGAP|TILT)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(DRIFT)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(YROTATION)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(ANGLE)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(CHANGEREF)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(PATCH_ANG|PATCH_TRANS)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(SROTATION)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(ANGLE)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(INSTRUMENT)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(RFCAVITY)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L|VOLT|LAG|FREQ|HARMON|N_BESSEL|NO_CAVITY_TOTALPATH)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(SBEND)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L|ANGLE|TILT|K0|K1|K2|E1|E2|FINT|FINTX|HGAP|H1|H2|THICK)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(TRANSLATION)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(X|Y|T|PX|PY|PT)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(ELSEPARATOR)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L|EX|EY|TILT)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(PLACEHOLDER)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(SOLENOID)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L|KS|KSI)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
+    - begin: (?i)\b(VKICKER)(\s*)\b
+      beginCaptures:
+        '1': {name: keyword.operator.madx}
+      end: (?=\;)
+      patterns:
+      - comment: Attributes
+        match: (?i)\b(L|KICK|TILT)(\s*)((\=)|\:\=)
+        captures:
+          '1': {name: keyword.attribute.cattribute}
+      - include: '#madxComments'
+      - include: '#madxOperators'
     - include: '#madxComments'
     - include: '#madxOperators'
-  attributes:
-    patterns:
-    - comment: Quad Attributes L=real, K1=real, K1S=real, TILT=real, THICK=logical;
-      match: (?i)\b(L|K1|K1S|TILT|THICK)((\=)|\:\=)
-      captures:
-        '1': {name: keyword.attribute.quad}
-    # - comment: Invalid Quad Attributes. Should be anything not explicitly in list of atts.
-    #   match: (?i)\b(...)((\=)|\:\=)
-    #   captures:
-    #     '1': {name: invalid}
-  matchingMode:
-    patterns:
-    - name: keyword.operator.madx.matchingMode
-      match: (?i)\b(sequence|vary|constraint|weight|global|gweight|lmdif|migrad|simplex|jacobian)\b
-    - include: '#madxComments'
-    - include: '#madxOperators'
-  # quadTest:
-  #   patterns:
-  #   - name: keyword.operator.madx.matchingMode
-  #     match: (?i)\b(sequence|vary|constraint|weight|global|gweight|lmdif|migrad|simplex|jacobian)\b
-  #   - include: '#madxComments'
-  # driftTest:
-  #     patterns:
-  #     - name: keyword.operator.madx.matchingMode
-  #       match: (?i)\b(sequence|vary|constraint|weight|global|gweight|lmdif|migrad|simplex|jacobian)\b
-  #     - include: '#madxComments'
-
-
-
